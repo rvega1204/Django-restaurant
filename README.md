@@ -19,6 +19,7 @@ A Django web application for managing a restaurant's online presence, including 
 - [Error Handling](#error-handling)
 - [Security Features](#security-features)
 - [Contributing](#contributing)
+- [License](#license)
 
 ## 🎯 Overview
 
@@ -404,7 +405,6 @@ python manage.py collectstatic
 - Follow PEP 8 guidelines
 - Include docstrings for all functions and classes (Google style)
 - Write tests for new features
-- Keep comments in English
 - Add error handling for new views
 
 ## 📧 Support
@@ -416,9 +416,15 @@ For issues or questions, please open an issue in the project repository.
 - Django Documentation
 - Django Community
 
+## 📜 License
+
+MIT License
+
+Copyright (c) 2025 Ricardo Vega
 ---
 
 **Version**: 1.0.0
 **Django Version**: 4.1.1
 **Python Version**: 3.12.6
+**License**: MIT
 **Last Updated**: December 2025
