@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section>
+  <article>
+    <h1>Make a reservation</h1>
+
+    <!-- Mensajes de éxito/error -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" style="
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 15px 25px;
+          background-color: #4CAF50;
+          color: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 1000;
+          font-weight: 500;
+          min-width: 250px;
+          text-align: center;
+          animation: slideIn 0.3s ease-out;
+        ">
+          ✓ {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <style>
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    </style>
+
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+        <form action="" method="post">
+          {% csrf_token %}
+          {{form.as_p}}
+          <input type="submit" id="button">
+        </form>
+      </div>
+      <!--End col-->
+
+      <!--Begin col-->
+      <div class="column">
+        <div class="videowrap">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11898.289517452584!2d-87.60853049433447!3d41.79442860243028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2912ce6f7027%3A0xc0cfb5545d4a37b2!2sHyde%20Park%2C%20Chicago%2C%20IL%2C%20USA!5e0!3m2!1sen!2spt!4v1662384760663!5m2!1sen!2spt"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+      <!--End col-->
+    </div>
+    <!--End row-->
+
+
+
+
+  </article>
+</section>
+
+<script>
+  // Ocultar mensajes después de 3 segundos
+  setTimeout(function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      alert.style.transition = 'opacity 0.5s';
+      alert.style.opacity = '0';
+      setTimeout(function() {
+        alert.remove();
+      }, 500);
+    });
+  }, 3000);
+</script>
+{% endblock %}
