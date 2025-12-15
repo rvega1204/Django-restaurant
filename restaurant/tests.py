@@ -134,6 +134,24 @@ class ViewsTest(TestCase):
         response = self.client.post(reverse('book'), data=form_data)
         self.assertEqual(response.status_code, 200)  # Does not redirect
         self.assertEqual(Booking.objects.count(), 0)  # Not saved
+        # Check that error message is displayed
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(str(messages_list[0]), 'Please correct the errors below.')
+
+    def test_book_view_success_message(self):
+        """Test that success message includes customer name"""
+        form_data = {
+            'first_name': 'Sarah',
+            'last_name': 'Connor',
+            'guest_number': 2,
+            'comment': 'Window seat please'
+        }
+        response = self.client.post(reverse('book'), data=form_data, follow=True)
+        # Check success message
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+        self.assertIn('Sarah Connor', str(messages_list[0]))
 
     def test_menu_view(self):
         """Test that menu view displays all items"""
@@ -152,9 +170,17 @@ class ViewsTest(TestCase):
 
     def test_display_menu_item_view_not_found(self):
         """Test that menu_item view handles non-existent objects"""
-        # This test verifies that the view raises an error when item doesn't exist
-        with self.assertRaises(Menu.DoesNotExist):
-            self.client.get(reverse('menu_item', args=[999]))
+        # This test verifies that the view redirects when item doesn't exist
+        response = self.client.get(reverse('menu_item', args=[999]))
+        self.assertEqual(response.status_code, 302)  # Redirects to menu
+        self.assertEqual(response.url, reverse('menu'))  # Redirects to menu page
+
+    def test_display_menu_item_error_message(self):
+        """Test that error message is shown for non-existent menu item"""
+        response = self.client.get(reverse('menu_item', args=[999]), follow=True)
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+        self.assertIn('not found', str(messages_list[0]).lower())
 
 
 # Integration tests

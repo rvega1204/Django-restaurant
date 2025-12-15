@@ -6,7 +6,7 @@
   <article>
     <h1>Make a reservation</h1>
 
-    <!-- Mensajes de éxito/error -->
+    <!-- Success/Error Messages -->
     {% if messages %}
       {% for message in messages %}
         <div class="alert alert-{{ message.tags }}" style="
@@ -14,7 +14,7 @@
           top: 20px;
           right: 20px;
           padding: 15px 25px;
-          background-color: #4CAF50;
+          background-color: {% if message.tags == 'error' %}#f44336{% else %}#4CAF50{% endif %};
           color: white;
           border-radius: 8px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -24,7 +24,11 @@
           text-align: center;
           animation: slideIn 0.3s ease-out;
         ">
-          ✓ {{ message }}
+          {% if message.tags == 'error' %}
+            ✗ {{ message }}
+          {% else %}
+            ✓ {{ message }}
+          {% endif %}
         </div>
       {% endfor %}
     {% endif %}

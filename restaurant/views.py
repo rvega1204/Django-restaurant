@@ -51,13 +51,35 @@ def book(request):
         HttpResponse: Rendered book.html template with form context
         HttpResponseRedirect: Redirect to booking page on successful submission
     """
-    form = BookingForm()
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Success reservation!')
-            return redirect('book')  # Redirect to clear form and show message
+            try:
+                # Attempt to save the booking
+                booking = form.save()
+                messages.success(
+                    request,
+                    f'Success reservation for {booking.first_name} {booking.last_name}!'
+                )
+                return redirect('book')  # Redirect to clear form and show message
+            except Exception as e:
+                # Handle any database or save errors
+                messages.error(
+                    request,
+                    'An error occurred while saving your reservation. Please try again.'
+                )
+                # Log the error for debugging (in production, use proper logging)
+                print(f"Booking save error: {str(e)}")
+        else:
+            # Form validation failed
+            messages.error(
+                request,
+                'Please correct the errors below.'
+            )
+    else:
+        # GET request - create empty form
+        form = BookingForm()
+
     context = {'form': form}
     return render(request, 'book.html', context)
 
@@ -88,13 +110,16 @@ def display_menu_item(request, pk=None):
 
     Returns:
         HttpResponse: Rendered menu_item.html template with menu item context
-
-    Raises:
-        Menu.DoesNotExist: If the menu item with given pk doesn't exist
+        HttpResponseRedirect: Redirect to menu page if item not found
     """
+    menu_item = None
+
     if pk is not None:
-        menu_item = Menu.objects.get(pk=pk)
-    else:
-        menu_item = None
+        try:
+            menu_item = Menu.objects.get(pk=pk)
+        except Menu.DoesNotExist:
+            # Item not found - show error and redirect to menu
+            messages.error(request, f'Menu item with ID {pk} not found.')
+            return redirect('menu')
 
     return render(request, 'menu_item.html', {'menu_item': menu_item})
